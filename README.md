@@ -1,2 +1,2 @@
-# dataretriever_spatial
-Concept scripts for Data Retriever's Spatial Data support module
+# spatial_support
+Concept scripts for Spatial Data support module
