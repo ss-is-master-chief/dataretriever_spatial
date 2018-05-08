@@ -2,6 +2,7 @@ import sys
 
 sys.path.insert(0,'/Library/Frameworks/GDAL.framework/Versions/2.2/Python/3.6/site-packages')
 
+
 try:
     from osgeo import ogr, osr
 except:
@@ -18,6 +19,14 @@ from osgeo import ogr
 
 ENCODING = "latin1"
 os.environ['GDAL_DATA'] = "/Library/Frameworks/GDAL.framework/Versions/2.2/Resources/gdal"
+
+# lets keep the two paths on top
+path_in = '/Users/sumitsaha/Downloads/Harvard_Forest_Properties_GIS_Layers'
+path_out = "/Users/sumitsaha/Desktop/dr"
+
+path_in = os.path.normpath(path_in)
+path_out = os.path.normpath(path_out)
+
 
 # create json from meta data of the geo source
 
@@ -117,10 +126,9 @@ def create_datapackage(driver_name='ESRI Shapefile'):
 
     the root dir of the vector file becomes the package name
     """
-    path_x = '/Users/sumitsaha/Downloads/Harvard_Forest_Properties_GIS_Layers'
     allpacks = collections.OrderedDict()
     # for path, subdirs, files in os.walk('.'):
-    for path, subdirs, files in os.walk(path_x):
+    for path, subdirs, files in os.walk(path_in):
         path_to_dir = os.path.abspath(path)
         dir_name = os.path.basename(path_to_dir)
         allpacks[dir_name] = collections.OrderedDict()
@@ -166,7 +174,7 @@ def create_datapackage(driver_name='ESRI Shapefile'):
             layer = collections.OrderedDict()
             layer["name"] = daLayer.GetName()
             layer["path"] = os.path.normpath(
-                os.path.relpath(file_path_source, "/Users/sumitsaha/Downloads/Harvard_Forest_Properties_GIS_Layers")).replace(
+                os.path.relpath(file_path_source, path_in)).replace(
                 os.path.sep, '/')
             layer["url"] = "http://harvardforest.fas.harvard.edu/data/p11/hf110/hf110-01-gis.zip"
             layer["geom_type"] = ogr.GeometryTypeToName(daLayer.GetLayerDefn().GetGeomType())
@@ -183,14 +191,14 @@ def create_datapackage(driver_name='ESRI Shapefile'):
                 layer["schema"]["fields"].append(col_obj)
             allpacks[dir_name][file_sc]["resources"].append(layer)
 
-    for path, subdirs, files in os.walk(path_x):
+    for path, subdirs, files in os.walk(path_in):
         files = [file_n for file_n in files if file_n.endswith(".shp")]
         for file_n in files:
             file_sc = file_n[0:-4]
             path_to_dir = os.path.abspath(path)
             dir_name = os.path.basename(path_to_dir)
             filenamejson = file_n[:-4].replace("-", "_").replace(".", "") + ".json"
-            file_path_source = os.path.join(r"/Users/sumitsaha/Desktop/dr", filenamejson)
+            file_path_source = os.path.join(path_out, filenamejson)
             with open_fw(file_path_source) as output_spec_datapack:
                 json_str = json.dumps(allpacks[dir_name][file_sc], sort_keys=True, indent=4,
                                       separators=(',', ': '))
