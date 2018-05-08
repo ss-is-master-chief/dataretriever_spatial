@@ -4,7 +4,7 @@
 
 Write `gdal-config --datadir` in Terminal which will give something like `/Library/Frameworks/GDAL.framework/Versions/2.2/Resources/gdal`
 
-Concept scripts for Spatial Data support module
+## GDAL import error
 
 Sometimes there are issues with importing GDAL, OGR, etc from OSGEO and the following results are obtained
 
