@@ -1,7 +1,12 @@
 # importing pyspatialite
 import sys
 
+<<<<<<< HEAD
 sys.path.insert(0,"/Library/Frameworks/SQLite3.framework/Versions/C/Python/2.7/")
+=======
+sys.path.insert(0,"/Library/Frameworks/SQLite3.framework/Versions/C/Python/2.7")
+sys.path.insert(0,"/usr/bin/python")
+>>>>>>> 0b777808add1938fdec40f9e7390cd81eef68d27
 
 import pyspatialite.dbapi2 as db
 
@@ -28,6 +33,10 @@ sql = 'CREATE TABLE test_pt ('
 sql += 'id INTEGER NOT NULL PRIMARY KEY,'
 sql += 'name TEXT NOT NULL)'
 cur.execute(sql)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0b777808add1938fdec40f9e7390cd81eef68d27
 # creating a POINT Geometry column
 sql = "SELECT AddGeometryColumn('test_pt','geom', 4326, 'POINT', 'XY')"
 cur.execute(sql)
