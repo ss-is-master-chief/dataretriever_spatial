@@ -192,10 +192,13 @@ def create_datapackage(driver_name='ESRI Shapefile'):
             filenamejson = file_n[:-4].replace("-", "_").replace(".", "") + ".json"
             file_path_source = os.path.join(r"/Users/sumitsaha/Desktop/dr", filenamejson)
             with open_fw(file_path_source) as output_spec_datapack:
-                json_str = json.dumps(allpacks[dir_name][file_sc], output_spec_datapack, sort_keys=True, indent=4,
+                json_str = json.dumps(allpacks[dir_name][file_sc], sort_keys=True, indent=4,
                                       separators=(',', ': '))
+
                 print(json_str)
-                output_spec_datapack.write(json_str + '\n')
+                print(file_path_source)
+
+                output_spec_datapack.write(json_str)
                 output_spec_datapack.close()
 
 
