@@ -81,3 +81,18 @@ postgres=# \password postgres
 Enter new password:
 Enter it again:
 ```
+
+### Find current user
+
+`postgres=# SELECT current_user;`
+
+### Find list of users and corresponding databases
+
+```
+select u.usename,
+       (select string_agg(d.datname, ',' order by d.datname)
+        from pg_database d
+        where has_database_privilege(u.usename, d.datname, 'CONNECT')) as allowed_databases
+from pg_user u
+order by u.usename
+```
