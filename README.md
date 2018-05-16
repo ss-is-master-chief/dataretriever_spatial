@@ -45,7 +45,8 @@ The extensions are located here `/usr/local/share/postgresql/extension`.
 
 ### Check Version
 
-```~ $ postgres -V
+```
+~ $ postgres -V
 postgres (PostgreSQL) 10.4
 ```
 
