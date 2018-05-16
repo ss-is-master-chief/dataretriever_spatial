@@ -96,3 +96,16 @@ select u.usename,
 from pg_user u
 order by u.usename
 ```
+
+### List all schemas
+
+```
+postgres=# \dn
+      List of schemas
+      Name      |   Owner
+----------------+-----------
+ public         | sumitsaha
+ topology       | sumitsaha
+ usgs_elevation | sumitsaha
+(3 rows)
+```
