@@ -109,3 +109,68 @@ postgres=# \dn
  usgs_elevation | sumitsaha
 (3 rows)
 ```
+
+### Find tables in schema "usgs_elevation"
+
+```
+postgres=# \dt usgs_elevation.*
+                      List of relations
+     Schema     |          Name           | Type  |   Owner
+----------------+-------------------------+-------+-----------
+ usgs_elevation | usgs_ned_13_n40w095_img | table | sumitsaha
+ usgs_elevation | usgs_ned_13_n41w095_img | table | sumitsaha
+(2 rows)
+```
+
+### Find tables in all schemas
+
+```
+postgres=# \dt *.*
+                        List of relations
+       Schema       |          Name           | Type  |   Owner
+--------------------+-------------------------+-------+-----------
+ information_schema | sql_features            | table | sumitsaha
+ information_schema | sql_implementation_info | table | sumitsaha
+ information_schema | sql_languages           | table | sumitsaha
+ information_schema | sql_packages            | table | sumitsaha
+ information_schema | sql_parts               | table | sumitsaha
+ information_schema | sql_sizing              | table | sumitsaha
+ information_schema | sql_sizing_profiles     | table | sumitsaha
+ pg_catalog         | pg_aggregate            | table | sumitsaha
+ pg_catalog         | pg_am                   | table | sumitsaha
+ pg_catalog         | pg_amop                 | table | sumitsaha
+ pg_catalog         | pg_amproc               | table | sumitsaha
+ pg_catalog         | pg_attrdef              | table | sumitsaha
+ pg_catalog         | pg_attribute            | table | sumitsaha
+ pg_catalog         | pg_auth_members         | table | sumitsaha
+ pg_catalog         | pg_authid               | table | sumitsaha
+ pg_catalog         | pg_cast                 | table | sumitsaha
+ pg_catalog         | pg_class                | table | sumitsaha
+ pg_catalog         | pg_collation            | table | sumitsaha
+ pg_catalog         | pg_constraint           | table | sumitsaha
+ pg_catalog         | pg_conversion           | table | sumitsaha
+ pg_catalog         | pg_database             | table | sumitsaha
+ pg_catalog         | pg_db_role_setting      | table | sumitsaha
+ pg_catalog         | pg_default_acl          | table | sumitsaha
+ pg_catalog         | pg_depend               | table | sumitsaha
+ pg_catalog         | pg_description          | table | sumitsaha
+ pg_catalog         | pg_enum                 | table | sumitsaha
+ pg_catalog         | pg_event_trigger        | table | sumitsaha
+ pg_catalog         | pg_extension            | table | sumitsaha
+ pg_catalog         | pg_foreign_data_wrapper | table | sumitsaha
+ pg_catalog         | pg_foreign_server       | table | sumitsaha
+ pg_catalog         | pg_foreign_table        | table | sumitsaha
+ pg_catalog         | pg_index                | table | sumitsaha
+ pg_catalog         | pg_inherits             | table | sumitsaha
+ pg_catalog         | pg_init_privs           | table | sumitsaha
+ pg_catalog         | pg_language             | table | sumitsaha
+ pg_catalog         | pg_largeobject          | table | sumitsaha
+ pg_catalog         | pg_largeobject_metadata | table | sumitsaha
+ pg_catalog         | pg_namespace            | table | sumitsaha
+ pg_catalog         | pg_opclass              | table | sumitsaha
+ pg_catalog         | pg_operator             | table | sumitsaha
+ pg_catalog         | pg_opfamily             | table | sumitsaha
+ pg_catalog         | pg_partitioned_table    | table | sumitsaha
+ pg_catalog         | pg_pltemplate           | table | sumitsaha
+ pg_catalog         | pg_policy               | table | sumitsaha
+```
