@@ -174,3 +174,12 @@ postgres=# \dt *.*
  pg_catalog         | pg_pltemplate           | table | sumitsaha
  pg_catalog         | pg_policy               | table | sumitsaha
 ```
+
+### Change ownership of schema
+
+If the current user is say `sumitsaha` and we need to change the ownership of `usgs_elevation` from `sumitsaha` to `postgres` we use the following command.
+
+```
+postgres=# ALTER SCHEMA usgs_elevation OWNER TO postgres;
+ALTER SCHEMA
+```
