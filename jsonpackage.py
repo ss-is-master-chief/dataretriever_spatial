@@ -22,7 +22,7 @@ os.environ['GDAL_DATA'] = "/Library/Frameworks/GDAL.framework/Versions/2.2/Resou
 
 # lets keep the two paths on top
 path_in = '/Users/sumitsaha/Downloads/Harvard_Forest_Properties_GIS_Layers'
-path_out = "/Users/sumitsaha/Desktop/dr"
+path_out = "/Users/sumitsaha/GHR/spatial_support/generated_json"
 
 path_in = os.path.normpath(path_in)
 path_out = os.path.normpath(path_out)
