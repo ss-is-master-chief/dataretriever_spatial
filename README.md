@@ -28,3 +28,54 @@ Solution:
 >>> print(osgeo.__version__)
 2.2.3
 ```
+
+## Installing PostgreSQL
+
+`brew install postgresql`
+
+The above does not install extensions such as `postgis` and `postgis_topology`. It is recommended that `PostGIS` is directly installed using `brew` by running the following command:
+
+`brew install postgis`
+
+`postgresql` is a dependency for `postgis`, and will be installed automatically.
+
+The extensions are located here `/usr/local/share/postgresql/extension`.
+
+## Running postgresql
+
+### Check Version
+
+`postgres -V`
+
+### Running postgresql
+
+`psql postgres`
+
+```
+~ $ psql postgres
+psql (10.4)
+Type "help" for help.
+
+postgres=#
+
+```
+### Show current users
+
+`postgres=# \du+`
+
+```
+postgres=# \du+
+                                          List of roles
+ Role name |                         Attributes                         | Member of | Description
+-----------+------------------------------------------------------------+-----------+-------------
+ postgres  |                                                            | {}        |
+ sumitsaha | Superuser, Create role, Create DB, Replication, Bypass RLS | {}        |
+```
+
+### Set password for user "postgres"
+
+```
+postgres=# \password postgres
+Enter new password:
+Enter it again:
+```
