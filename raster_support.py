@@ -73,7 +73,7 @@ class sqlite_engine:
 if __name__=="__main__":
 
     obj = sqlite_engine()
-    obj.create_database()
+    #obj.create_database()
     #os.system("clear")
 
 
