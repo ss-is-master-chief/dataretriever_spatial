@@ -28,7 +28,15 @@ except:
 class sqlite_engine:
 
     def __init__(self):
-        pass
+        conn = sqlite3.connect("db.sqlite")
+        cur = conn.cursor()
+        self.create_database()
+        self.open_dataset()
+        self.get_metadata()
+        self.get_raster_bands()
+        self.to_csv()
+        self.to_sqlite()
+        conn.close()
 
     def create_database(self):
         try:
@@ -36,40 +44,52 @@ class sqlite_engine:
         except Error as e:
             print(e)
 
+    def open_dataset(self):
+        try:
+            global df
+            df = gdal.Open("tif_data.tif")
 
-'''
+        except RuntimeError, e:
+            print("Unable to open raster file")
+            print(e)
+            sys.exit(1)
+
+    def get_metadata(self):
+        return df.GetMetadata()
+
+    def get_raster_bands(self):
+        return df.RasterCount
+
+    #def close_connection(self):
+        #conn.close()
+
     def to_csv(self):
-        os.system("gdal_translate -b 1 -of XYZ tif_data.tif data.csv -co ADD_HEADER_LINE=YES")'''
+        os.system("gdal_translate -b 1 -of XYZ tif_data.tif Raster.csv -co ADD_HEADER_LINE=YES")
 
+    def to_sqlite(self):
+        os.system("ogr2ogr -update -append -f SQLite db.sqlite -nln b1 Raster.csv -dsco METADATA=NO -dsco INIT_WITH_EPSG=NO")
+        os.system("rm Raster.csv")
 
 if __name__=="__main__":
 
     obj = sqlite_engine()
     obj.create_database()
-    os.system("clear")
+    #os.system("clear")
 
-    try:
-        df = gdal.Open("tif_data.tif")
 
-    except RuntimeError, e:
-        print("Unable to open raster file")
-        print(e)
-        sys.exit(1)
 
-    conn = sqlite3.connect("db.sqlite")
-    cur = conn.cursor()
+
     #cur.execute("CREATE TABLE t (col1, col2, col3);")
 
-    with open('data.csv', 'rb') as fin:
+    #with open('data.csv', 'rb') as fin:
         #reader = csv.reader(fin)
         #i = next(reader)
         #print(i)
         #dr = csv.DictReader(fin)
         #to_db = [(i['col1'], i['col2'], i['col3']) for i in dr]
 
-#cur.executemany("INSERT INTO t (col1, col2, col3) VALUES (?, ?, ?);", to_db)
-#con.commit()
-conn.close()
+        #cur.executemany("INSERT INTO t (col1, col2, col3) VALUES (?, ?, ?);", to_db)
+        #con.commit()
 
     #print(x.GetMetadata())
 
