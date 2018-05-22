@@ -1,6 +1,7 @@
 import os
 import sys
 import csv
+import glob
 
 '''Importing SQLite module'''
 
@@ -27,82 +28,72 @@ except:
 
 class sqlite_engine:
 
-    def __init__(self):
-        conn = sqlite3.connect("db.sqlite")
-        cur = conn.cursor()
-        self.create_database()
-        self.open_dataset()
-        self.get_metadata()
-        self.get_raster_bands()
-        self.to_csv()
-        self.to_sqlite()
-        conn.close()
+    extensions = [".tif"]
+    files = []
+    file_name = []
+    all_bands = []
+    n_raster_bands = 0
+    df = None
 
-    def create_database(self):
+    def __init__(self):
+        #conn = sqlite3.connect("db.sqlite")
+        #cur = conn.cursor()
+        self.get_raster_files()
+        print(self.file_name)
+
+        for file in self.file_name:
+            self.create_database(file)
+        for file in self.file_name:
+            self.open_raster_dataset(file)
+            self.to_csv(file)
+            self.df = None
+
+    def get_raster_files(self):
+        for ext in self.extensions:
+            for file in glob.glob("*{}".format(ext)):
+                self.files.append(os.path.abspath(file))
+        self.get_file_names()
+
+    def get_file_names(self):
+        for file in self.files:
+            self.file_name.append(os.path.basename(file))
+
+    def create_database(self,file_name):
         try:
-            os.system("spatialite db.sqlite '.databases'")
+            file_name = file_name.rsplit(".",1)[0]
+            os.system("spatialite {}.sqlite '.databases'".format(file_name))
         except Error as e:
             print(e)
 
-    def open_dataset(self):
+    def open_raster_dataset(self,file_name):
         try:
-            global df
-            df = gdal.Open("tif_data.tif")
+            self.df = gdal.Open(file_name)
 
         except RuntimeError, e:
             print("Unable to open raster file")
             print(e)
             sys.exit(1)
 
+    def get_raster_bands(self,file_name):
+        self.n_raster_bands = self.df.RasterCount
+
     def get_metadata(self):
-        return df.GetMetadata()
+        return self.df.GetMetadata()
 
-    def get_raster_bands(self):
-        return df.RasterCount
+    def to_csv(self,file_name):
+        self.get_raster_bands(file_name)
+        file_name_wo_ext = file_name.rsplit(".",1)[0]
+        for band in range(1,self.n_raster_bands+1):
+            os.system("gdal_translate -b {} -of XYZ {} {}.csv \
+            -co ADD_HEADER_LINE=YES".format(band, file_name, file_name_wo_ext))
+            self.to_sqlite(file_name_wo_ext,band)
+            os.system("rm {}.csv".format(file_name_wo_ext))
 
-    #def close_connection(self):
-        #conn.close()
-
-    def to_csv(self):
-        os.system("gdal_translate -b 1 -of XYZ tif_data.tif Raster.csv -co ADD_HEADER_LINE=YES")
-
-    def to_sqlite(self):
-        os.system("ogr2ogr -update -append -f SQLite db.sqlite -nln b1 Raster.csv -dsco METADATA=NO -dsco INIT_WITH_EPSG=NO")
-        os.system("rm Raster.csv")
+    def to_sqlite(self,file_name_wo_ext,band):
+        os.system("ogr2ogr -update -append -f SQLite {}.sqlite \
+        -nln b{} {}.csv -dsco METADATA=NO \
+        -dsco INIT_WITH_EPSG=NO".format(file_name_wo_ext, band, file_name_wo_ext))
 
 if __name__=="__main__":
 
     obj = sqlite_engine()
-    #obj.create_database()
-    #os.system("clear")
-
-
-
-
-    #cur.execute("CREATE TABLE t (col1, col2, col3);")
-
-    #with open('data.csv', 'rb') as fin:
-        #reader = csv.reader(fin)
-        #i = next(reader)
-        #print(i)
-        #dr = csv.DictReader(fin)
-        #to_db = [(i['col1'], i['col2'], i['col3']) for i in dr]
-
-        #cur.executemany("INSERT INTO t (col1, col2, col3) VALUES (?, ?, ?);", to_db)
-        #con.commit()
-
-    #print(x.GetMetadata())
-
-    #print(x.RasterCount)
-
-    #srcband = x.GetRasterBand(1)
-    #stats = srcband.GetStatistics(True, True)
-    #print(srcband)
-    #print(stats)
-
-    #print "[ NO DATA VALUE ] = ", srcband.GetNoDataValue()
-    #print "[ MIN ] = ", srcband.GetMinimum()
-    #print "[ MAX ] = ", srcband.GetMaximum()
-    #print "[ SCALE ] = ", srcband.GetScale()
-    #print "[ UNIT TYPE ] = ", srcband.GetUnitType()
-    #ctable = srcband.GetColorTable()
