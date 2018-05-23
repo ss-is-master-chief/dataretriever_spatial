@@ -167,21 +167,50 @@ class sqlite_engine:
         conn = sqlite3.connect("metadata.db")
         cur = conn.cursor()
 
-        statement = r"CREATE TABLE IF NOT EXISTS metadata (id INTEGER PRIMARY KEY AUTOINCREMENT, file_name TEXT, file_type TEXT);"
+        statement_create = r"CREATE TABLE IF NOT EXISTS metadata (id INTEGER PRIMARY KEY AUTOINCREMENT, file_name TEXT, file_type TEXT);"
 
-        cur.execute(statement)
-        conn.commit()
+        cur.execute(statement_create)
 
         file_name_wo_ext = file_name.rsplit(".",1)[0]
         file_extension = "."+file_name.rsplit(".",1)[1]
 
         params = (file_name_wo_ext,file_extension)
 
-        statement = r"INSERT INTO metadata VALUES (NULL,?,?);"
+        statement_insert = r"INSERT INTO metadata VALUES (NULL,?,?);"
 
-        cur.execute(statement,params)
-
+        cur.execute(statement_insert,params)
         conn.commit()
+
+        '''
+        When running the script the older values are appended again.
+        The following SQLite statements take care of it by,
+        getting the distinct current data from table
+        and replacing the old table with the new values obtained.
+
+        '''
+
+        statement_distinct = r"SELECT DISTINCT file_name, file_type from metadata;"
+
+        insertions = []
+
+        for row in cur.execute(statement_distinct):
+            insertions.append([str(list(row)[0]),str(list(row)[1])])
+
+        truncate = r"DELETE FROM metadata"
+        cur.execute(truncate)
+
+        reset_autoincrement = r"DELETE FROM sqlite_sequence WHERE name='metadata';"
+        cur.execute(reset_autoincrement)
+
+        cur.execute(statement_create)
+
+        statement_insert = r"INSERT INTO metadata VALUES (NULL,?,?);"
+
+        for val in insertions:
+            params = (val[0],val[1])
+            cur.execute(statement_insert,params)
+            conn.commit()
+
         conn.close()
 
 
