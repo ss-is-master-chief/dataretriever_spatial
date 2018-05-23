@@ -3,6 +3,7 @@ import sys
 import csv
 import glob
 from tqdm import tqdm
+import numpy as np
 
 '''Importing SQLite module'''
 
@@ -29,14 +30,15 @@ except:
 
 class sqlite_engine:
 
-    extensions = [".tif"]
+    extensions = [".tif",".jpg",".jpeg",".png"]
+    supported_extensions = []
     files = []
     file_name = []
-    all_bands = []
     n_raster_bands = 0
     df = None
     conn = None
     cur = None
+    validity = 0
 
     def __init__(self):
         self.get_raster_files()
@@ -50,6 +52,18 @@ class sqlite_engine:
             self.install_into_sqlite(file)
             self.df = None
             self.cur.close()
+            self.validity = 0
+
+        '''Add supported extensions only to the operational list'''
+
+        conn = sqlite3.connect("metadata.db")
+        cur = conn.cursor()
+
+        for row in list(cur.execute("SELECT file_type FROM metadata"))[0]:
+            if row not in self.supported_extensions:
+                self.supported_extensions.append(str(row))
+
+        cur.close()
 
     '''Get paths to available raster files in current directory'''
 
@@ -121,8 +135,13 @@ class sqlite_engine:
             self.temp_csv_to_sqlite(file_name_wo_ext,band)
 
             '''remove temporary CSV'''
-            
+
             os.system("rm {}.csv".format(file_name_wo_ext))
+
+            self.check_valid_installation(band)
+
+            if(self.validity==self.n_raster_bands):
+                self.create_metadata_db(file_name)
 
     def temp_csv_to_sqlite(self,file_name_wo_ext,band):
 
@@ -131,6 +150,40 @@ class sqlite_engine:
         os.system("ogr2ogr -update -append -f SQLite {}.sqlite \
         -nln b{} {}.csv -dsco METADATA=NO \
         -dsco INIT_WITH_EPSG=NO".format(file_name_wo_ext, band, file_name_wo_ext))
+
+    def check_valid_installation(self,band):
+        for c in self.cur.execute("SELECT Count(*) FROM b{}".format(band)):
+            count = list(c)[0]
+
+        band_data = np.array(self.df.GetRasterBand(band).ReadAsArray().astype(np.float32))
+        rows, columns = list(band_data.shape)
+
+        if(count==rows*columns):
+            self.validity += 1
+
+    '''Database containing installed raster db information'''
+
+    def create_metadata_db(self,file_name):
+        conn = sqlite3.connect("metadata.db")
+        cur = conn.cursor()
+
+        statement = r"CREATE TABLE IF NOT EXISTS metadata (id INTEGER PRIMARY KEY AUTOINCREMENT, file_name TEXT, file_type TEXT);"
+
+        cur.execute(statement)
+        conn.commit()
+
+        file_name_wo_ext = file_name.rsplit(".",1)[0]
+        file_extension = "."+file_name.rsplit(".",1)[1]
+
+        params = (file_name_wo_ext,file_extension)
+
+        statement = r"INSERT INTO metadata VALUES (NULL,?,?);"
+
+        cur.execute(statement,params)
+
+        conn.commit()
+        conn.close()
+
 
 if __name__=="__main__":
 
