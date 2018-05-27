@@ -47,13 +47,10 @@ class sqlite_engine:
     def __init__(self):
         self.get_raster_files()
 
-        for file in self.file_name:
-            self.db_connection(file)
-            self.open_raster_dataset(file)
-            self.install_into_sqlite(file)
-            self.df = None
-            self.cur.close()
-            self.validity = 0
+        for files in self.file_name:
+            print(files)
+
+        self.ask_input()    
 
         '''Add supported extensions only to the operational list'''
 
@@ -65,6 +62,30 @@ class sqlite_engine:
                 self.supported_extensions.append(str(row))
 
         cur.close()
+
+    def ask_input(self):
+        choice = raw_input("Enter dataset to install: ")
+
+        if(len(choice)<1):
+            for file in self.file_name:
+                self.db_connection(file)
+                self.open_raster_dataset(file)
+                self.install_into_sqlite(file)
+                self.df = None
+                self.cur.close()
+                self.validity = 0
+        elif choice not in self.file_name:
+            print("Requested dataset not available. Enter valid dataset..")
+            self.ask_input()
+
+        else:
+            self.db_connection(choice)
+            self.open_raster_dataset(choice)
+            self.install_into_sqlite(choice)
+            self.df = None
+            self.cur.close()
+            self.validity = 0
+
 
     '''Get paths to available raster files in current directory'''
 
@@ -118,7 +139,6 @@ class sqlite_engine:
 
             for item in self.dir_files[file_name.rsplit(".",1)[0]]:
                 if(item.rsplit(".",1)[1]=="bil"):
-                    print(item)
                     file_name = pre_text + "/" + item
                     try:
                         self.df = gdal.Open(file_name)
