@@ -47,10 +47,13 @@ class sqlite_engine:
     def __init__(self):
         self.get_raster_files()
 
+        print("AVAILABLE DATAFILES")
+        print(len(max(self.file_name,key=len))*'-')
         for files in self.file_name:
             print(files)
+        print(len(max(self.file_name,key=len))*'-')
 
-        self.ask_input()    
+        self.ask_input()
 
         '''Add supported extensions only to the operational list'''
 
@@ -68,24 +71,22 @@ class sqlite_engine:
 
         if(len(choice)<1):
             for file in self.file_name:
-                self.db_connection(file)
-                self.open_raster_dataset(file)
-                self.install_into_sqlite(file)
-                self.df = None
-                self.cur.close()
-                self.validity = 0
+                self.function_flow(file_name)
+                
         elif choice not in self.file_name:
             print("Requested dataset not available. Enter valid dataset..")
             self.ask_input()
 
         else:
-            self.db_connection(choice)
-            self.open_raster_dataset(choice)
-            self.install_into_sqlite(choice)
-            self.df = None
-            self.cur.close()
-            self.validity = 0
+            self.function_flow(choice)
 
+    def function_flow(self,file_name):
+        self.db_connection(file_name)
+        self.open_raster_dataset(file_name)
+        self.install_into_sqlite(file_name)
+        self.df = None
+        self.cur.close()
+        self.validity = 0
 
     '''Get paths to available raster files in current directory'''
 
@@ -208,10 +209,10 @@ class sqlite_engine:
 
             os.system("rm {}.csv".format(file_name_wo_ext))
 
-            self.check_valid_installation(band)
+            #self.check_valid_installation(band)
 
-            if(self.validity==self.n_raster_bands):
-                self.create_metadata_db(file_name)
+            #if(self.validity==self.n_raster_bands):
+            #    self.create_metadata_db(file_name)
 
     def temp_csv_to_sqlite(self,file_name_wo_ext,band):
 
@@ -221,12 +222,12 @@ class sqlite_engine:
         -nln b{} {}.csv -dsco METADATA=NO \
         -dsco INIT_WITH_EPSG=NO".format(file_name_wo_ext, band, file_name_wo_ext))
 
-    def check_valid_installation(self,band):
-        for c in self.cur.execute("SELECT Count(*) FROM b{}".format(band)):
-            count = list(c)[0]
+#    def check_valid_installation(self,band):
+#        for c in self.cur.execute("SELECT Count(*) FROM b{}".format(band)):
+#            count = list(c)[0]
 
-        if(count==self.df.RasterXSize * self.df.RasterYSize):
-            self.validity += 1
+#        if(count==self.df.RasterXSize * self.df.RasterYSize):
+#            self.validity += 1
 
     '''Database containing installed raster db information'''
 
