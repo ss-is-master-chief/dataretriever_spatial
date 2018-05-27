@@ -38,6 +38,7 @@ class sqlite_engine:
     zip_files = []
     dir_files = {}
     file_name = []
+    quiet = None
     n_raster_bands = 0
     df = None
     conn = None
@@ -45,6 +46,8 @@ class sqlite_engine:
     validity = 0
 
     def __init__(self):
+
+        print "Collecting datasets..."
         self.get_raster_files()
 
         print("AVAILABLE DATAFILES")
@@ -66,13 +69,24 @@ class sqlite_engine:
 
         cur.close()
 
+        files = []
+        zip_files = []
+        dir_files = {}
+        file_name = []
+        quiet = None
+
     def ask_input(self):
-        choice = raw_input("Enter dataset to install: ")
+        choice = raw_input("Enter dataset to install ['close' to exit, default: all]: ")
+
+        self.quiet_mode()
 
         if(len(choice)<1):
             for file in self.file_name:
                 self.function_flow(file_name)
-                
+
+        elif choice.lower()=="close":
+            sys.exit(1)
+
         elif choice not in self.file_name:
             print("Requested dataset not available. Enter valid dataset..")
             self.ask_input()
@@ -80,13 +94,38 @@ class sqlite_engine:
         else:
             self.function_flow(choice)
 
+    def quiet_mode(self):
+        self.quiet = raw_input("Execute in quiet mode?: [y/n]")
+
+        if self.quiet.lower()=="n" or self.quiet.lower()=="no":
+            self.quiet = ""
+        elif self.quiet.lower()=="y" or self.quiet.lower()=="yes":
+            self.quiet = " -q"
+        else:
+            print "Option unavailable. Enter again.. "
+            self.quiet_mode()
+
+
     def function_flow(self,file_name):
         self.db_connection(file_name)
         self.open_raster_dataset(file_name)
-        self.install_into_sqlite(file_name)
+        self.loop_if_compressed(file_name)
         self.df = None
         self.cur.close()
         self.validity = 0
+
+        def ask_again():
+            again = raw_input("Install another dataset? [y/n]: ")
+
+            if again.lower()=="n" or again.lower()=="no":
+                sys.exit(1)
+            elif again.lower()=="y" or again.lower()=="yes":
+                self.__init__()
+            else:
+                print "Option unavailable. Enter again.. "
+                ask_again()
+
+        ask_again()
 
     '''Get paths to available raster files in current directory'''
 
@@ -169,18 +208,27 @@ class sqlite_engine:
     def drop_table_statement(self,band):
         self.cur.execute("DROP TABLE IF EXISTS b{};".format(band))
 
-    '''Installing data into SQLite'''
-
-    def install_into_sqlite(self,file_name):
+    def loop_if_compressed(self,file_name):
         if(file_name.rsplit(".",1)[1]=="zip"):
             pre_text = file_name.rsplit(".",1)[0]
+
+            print self.dir_files
+
+            b = raw_input("Enter bounding box for {}: ".format(file_name.rsplit(".",1)[0]))
+            bb = [float(x) for x in b.split(" ")]
 
             for item in self.dir_files[file_name.rsplit(".",1)[0]]:
                 if(item.rsplit(".",1)[1]=="bil"):
                     file_name = pre_text + "/" + item
+                    self.install_into_sqlite(file_name,bb)
+        else:
+            self.install_into_sqlite(file_name)
 
-        b = raw_input("Enter bounding box for {}: ".format(file_name))
-        bb = [float(x) for x in b.split(" ")]
+    '''Installing data into SQLite'''
+
+    def install_into_sqlite(self,file_name,bound_box=None):
+
+        bb = bound_box
 
         self.get_raster_bands(file_name)
         file_name_wo_ext = file_name.rsplit(".",1)[0]
@@ -197,17 +245,19 @@ class sqlite_engine:
 
             if(len(bb)!=4):
                 os.system("gdal_translate -b {} -of XYZ {} {}.csv \
-                -co ADD_HEADER_LINE=YES".format(band, file_name, file_name_wo_ext))
+                -co ADD_HEADER_LINE=YES {}".format(band, file_name, file_name_wo_ext,self.quiet))
             else:
                 os.system("gdal_translate -projwin {} {} {} {} \
                 -b {} -of XYZ {} {}.csv \
-                -co ADD_HEADER_LINE=YES".format(bb[0], bb[1], bb[2], bb[3], band, file_name, file_name_wo_ext))
+                -co ADD_HEADER_LINE=YES {}".format(bb[0], bb[1], bb[2], bb[3], band, file_name, file_name_wo_ext,self.quiet))
 
             self.temp_csv_to_sqlite(file_name_wo_ext,band)
 
             '''remove temporary CSV'''
 
             os.system("rm {}.csv".format(file_name_wo_ext))
+
+            print "\nInstallation complete!!\n"
 
             #self.check_valid_installation(band)
 
