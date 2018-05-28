@@ -32,7 +32,7 @@ except:
 
 class sqlite_engine:
 
-    extensions = [".tif",".jpg",".jpeg",".png"]
+    extensions = [".tif",".jpg",".jpeg",".png", ".bil", ".img"]
     supported_extensions = []
     files = []
     zip_files = []
@@ -50,13 +50,15 @@ class sqlite_engine:
         print "Collecting datasets..."
         self.get_raster_files()
 
+
         print("AVAILABLE DATAFILES")
         print(len(max(self.file_name,key=len))*'-')
         for files in self.file_name:
             print(files)
         print(len(max(self.file_name,key=len))*'-')
 
-        self.ask_input()
+        if(self.ask_input()==0):
+            sys.exit(0)
 
         '''Add supported extensions only to the operational list'''
 
@@ -76,26 +78,28 @@ class sqlite_engine:
         quiet = None
 
     def ask_input(self):
-        choice = raw_input("Enter dataset to install ['close' to exit, default: all]: ")
 
         self.quiet_mode()
+        choice = raw_input("Enter dataset to install ['close' to exit, default: all]: ")
 
-        if(len(choice)<1):
-            for file in self.file_name:
-                self.function_flow(file_name)
-
-        elif choice.lower()=="close":
-            sys.exit(1)
-
-        elif choice not in self.file_name:
-            print("Requested dataset not available. Enter valid dataset..")
-            self.ask_input()
+        if choice.lower()=="close":
+            return 0
 
         else:
-            self.function_flow(choice)
+
+            if(len(choice)<1):
+                for file in self.file_name:
+                    self.function_flow(file_name)
+
+            elif choice not in self.file_name:
+                print("Requested dataset not available. Enter valid dataset..")
+                self.ask_input()
+
+            else:
+                self.function_flow(choice)
 
     def quiet_mode(self):
-        self.quiet = raw_input("Execute in quiet mode?: [y/n]")
+        self.quiet = raw_input("Execute in quiet mode? [y/n]: ")
 
         if self.quiet.lower()=="n" or self.quiet.lower()=="no":
             self.quiet = ""
@@ -137,6 +141,7 @@ class sqlite_engine:
         self.get_zip_files()
         self.get_file_names()
         self.list_dir_files()
+
         #print(self.dir_files)
 
 
@@ -152,8 +157,8 @@ class sqlite_engine:
     def extract_zip_files(self,file_path):
         for zf in self.zip_files:
             zip_dir = zipfile.ZipFile(zf)
-            zip_dir.extractall(os.path.basename(zf).rstrip(".zip"))
-            os.system("rm -rf {}/__MACOSX".format(os.path.basename(zf).rstrip(".zip")))
+            zip_dir.extractall(os.path.basename(zf).rsplit(".",1)[0])
+            os.system("rm -rf {}/__MACOSX".format(os.path.basename(zf).rsplit(".",1)[0]))
             zip_dir.close()
 
     def list_dir_files(self):
@@ -178,7 +183,7 @@ class sqlite_engine:
             pre_text = file_name.rsplit(".",1)[0]
 
             for item in self.dir_files[file_name.rsplit(".",1)[0]]:
-                if(item.rsplit(".",1)[1]=="bil"):
+                if(item.rsplit(".",1)[1]=="bil" or item.rsplit(".",1)[1]=="img"):
                     file_name = pre_text + "/" + item
                     try:
                         self.df = gdal.Open(file_name)
@@ -212,13 +217,11 @@ class sqlite_engine:
         if(file_name.rsplit(".",1)[1]=="zip"):
             pre_text = file_name.rsplit(".",1)[0]
 
-            print self.dir_files
-
             b = raw_input("Enter bounding box for {}: ".format(file_name.rsplit(".",1)[0]))
             bb = [float(x) for x in b.split(" ")]
 
             for item in self.dir_files[file_name.rsplit(".",1)[0]]:
-                if(item.rsplit(".",1)[1]=="bil"):
+                if(item.rsplit(".",1)[1]=="bil" or item.rsplit(".",1)[1]=="img"):
                     file_name = pre_text + "/" + item
                     self.install_into_sqlite(file_name,bb)
         else:
@@ -337,8 +340,6 @@ class sqlite_engine:
         #os.system("gdalinfo {} > info.txt".format(file_name))
 
         conn.close()
-
-
 
 if __name__=="__main__":
 
