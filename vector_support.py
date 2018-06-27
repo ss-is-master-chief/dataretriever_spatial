@@ -54,7 +54,7 @@ from osgeo import ogr
 # cur.close()
 # conn.close()
 
-ds = ogr.Open('map.shp',0)
+ds = ogr.Open(sys.argv[2],0)
 print "Layer Count:", ds.GetLayerCount()
 
 shape = ds.GetLayer(0)
