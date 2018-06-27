@@ -1,0 +1,36 @@
+ogc_fid,GEOMETRY,id_0,iso,name_0,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,shape_leng,shape_area
+1,"",105,IND,India,1287,"Andaman and Nicobar","Andaman & Nicobar Islands|Andaman et Nicobar|Iihas de Andama e Nicobar|Inseln Andamanen und Nikobare",,IN.AN,,"Union Territor","Union Territory",,,,33.5140473044,0.630484204722
+2,"",105,IND,India,1288,"Andhra Pradesh",,,IN.AP,,State,State,,,,58.9163106033,23.2812969322
+3,"",105,IND,India,1289,"Arunachal Pradesh","Agence de la Frontisre du Nord-Est(French-obsolete)|North East Frontier Agency",,IN.AR,,State,State,,,,24.8519909983,7.52930142967
+4,"",105,IND,India,1290,Assam,,,IN.AS,,State,State,,,,28.5429637292,7.0914575189
+5,"",105,IND,India,1291,Bihar,,,IN.BR,,State,State,,,,25.9800486983,8.47505796855
+6,"",105,IND,India,1292,Chandigarh,,,IN.CH,,"Union Territor","Union Territory",,,,0.514098034264,0.0111254631515
+7,"",105,IND,India,1293,Chhattisgarh,,,IN.CT,,State,State,,,,28.8865816337,11.7900866764
+8,"",105,IND,India,1294,"Dadra and Nagar Haveli","DAdra et Nagar Haveli|Dadra e Nagar Haveli",,IN.DN,,"Union Territor","Union Territory",,,,1.67693726134,0.042478190416
+9,"",105,IND,India,1295,"Daman and Diu",,,IN.DD,,"Union Territor","Union Territory",,,,2.11842462986,0.048239671239
+10,"",105,IND,India,1296,Delhi,,,IN.DL,,"Union Territor","Union Territory",,,,2.0644226898,0.138635152159
+11,"",105,IND,India,1297,Goa,"Gôa",,IN.GA,,State,State,,,,4.47378705055,0.311075123807
+12,"",105,IND,India,1298,Gujarat,Goudjerate|Gujerat|Gujerate,,IN.GJ,,State,State,,,,73.4831909504,16.2829182497
+13,"",105,IND,India,1299,Haryana,,,IN.HR,,State,State,,,,21.6942009424,4.08451829539
+14,"",105,IND,India,1300,"Himachal Pradesh",,,IN.HP,,"Union Territor","Union Territory",,,,15.0626179631,5.30285976387
+15,"",105,IND,India,1301,"Jammu and Kashmir",,,IN.JK,,State,State,,,,21.4104176968,10.283009181
+16,"",105,IND,India,1302,Jharkhand,Vananchal,,IN.JH,,State,State,,,,26.6734487435,7.08429226527
+17,"",105,IND,India,1303,Karnataka,Maisur|Mysore,,IN.KA,,State,State,,,,42.1049240588,16.066964956
+18,"",105,IND,India,1304,Kerala,,,IN.KL,,State,State,,,,28.7258749759,3.11367707193
+19,"",105,IND,India,1305,Lakshadweep,"Íles Laquedives|Laccadive|Minicoy and Amindivi Islands|Laccadives|Lackadiverna|Lakkadiven|Lakkadi",,IN.LD,,"Union Territor","Union Territory",,,,1.7445344272,0.002878529568
+20,"",105,IND,India,1306,"Madhya Pradesh",,,IN.MP,,State,State,,,,62.3736436141,27.2469182609
+21,"",105,IND,India,1307,Maharashtra,,,IN.MH,,State,State,,,,55.1247826449,26.4478307151
+22,"",105,IND,India,1308,Manipur,,,IN.MN,,State,State,,,,8.26772956714,1.99197112918
+23,"",105,IND,India,1309,Meghalaya,,,IN.ML,,State,State,,,,11.027121905,2.01426942581
+24,"",105,IND,India,1310,Mizoram,,,IN.MZ,,State,State,,,,9.28196733181,1.86599079505
+25,"",105,IND,India,1311,Nagaland,,,IN.NL,,State,State,,,,8.6888062048,1.49743743021
+26,"",105,IND,India,1312,Orissa,,,IN.OR,,State,State,,,,37.0639541451,13.4796037918
+27,"",105,IND,India,1313,Puducherry,"Pondicherry|Puduchcheri|Pondichéry",,IN.PY,,"Union Territor","Union Territory",,,,4.07030884112,0.045424423781
+28,"",105,IND,India,1314,Punjab,,,IN.PB,,State,State,,,,16.0078870601,4.73601703627
+29,"",105,IND,India,1315,Rajasthan,"Greater Rajasthan|Rajputana",,IN.RJ,,State,State,,,,48.9680005157,30.9864059364
+30,"",105,IND,India,1316,Sikkim,,,IN.SK,,State,State,,,,4.0754425011,0.65260831487
+31,"",105,IND,India,1317,"Tamil Nadu",Madras|Tamilnad,,IN.TN,,State,State,,,,35.9037341486,10.7736552879
+32,"",105,IND,India,1318,Tripura,,,IN.TR,,State,State,,,,7.7871146796,0.925318095326
+33,"",105,IND,India,1319,"Uttar Pradesh","United Provinces",,IN.UP,,State,State,,,,51.9302693897,21.8814001768
+34,"",105,IND,India,1320,Uttaranchal,Uttarakhand,,IN.UT,,State,State,,,,14.8077006927,5.02382933383
+35,"",105,IND,India,1321,"West Bengal","Bangla|Bengala Occidentale|Bengala Ocidental|Bengale occidental",,IN.WB,,State,State,,,,74.2704454187,7.56039551741
